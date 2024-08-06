@@ -56,10 +56,25 @@ from tensorflow.keras.models import Model
 model = Model(input = base_model.input , output = preditions )
 
 model.compile(optimizer = 'adam' , loss = 'categorical_crossentropy', metrics= ['accuracy'])
-
-#train the model
+history = model.fit(train_generator,epochs = 20,validation_data = val_generator,step_per_epochs = train_generator.samples // train_generator.batch_size,validation_steps = val_generator.samples//val_generator.batch_size)
 
 #evaluate the model
+
+plt.figure(figsize=(12,4))
+plt.subplot(1,2,1)
+plt.plot(history.history['accuracy'],label = 'train_accuracy')
+plt.plot(history.history['val_accuracy'],label = 'val_accuracy')
+
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+
+plt.legend()
+plt.show()
+
+val_loss , val_accuracy = model.evaluate(val_generator)
+print(f'Validation Accuracy : {val_accuracy * 100:.2f}')
+
 #Save and export the model
+model.save('dog_breed_recognition_model.h5')
 
 #make predictions on new data
